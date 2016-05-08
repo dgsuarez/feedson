@@ -35,10 +35,15 @@ describe Feedson::FeedToJson do
     end
 
     it "has a list of items" do
-      p doc["rss"]["channel"]["item"]
       items = doc["rss"]["channel"]["item"]
 
       expect(items.length).to eq(4)
+    end
+
+    it "doesn't add whitespace only text elements" do
+      text_node = doc["rss"]["$t"]
+
+      expect(text_node).to be_nil
     end
 
   end

@@ -19,8 +19,10 @@ module Feedson
     end
 
     def characters(chars)
-      @current_element["$t"] ||= ""
-      @current_element["$t"] += chars
+      if chars =~ /[^\s]/
+        @current_element["$t"] ||= ""
+        @current_element["$t"] += chars
+      end
     end
 
     def end_element(name)
@@ -38,7 +40,6 @@ module Feedson
         parent_element[name] = @current_element
       end
       @element_history.push(@current_element)
-
     end
 
     def add_attributes(attributes)
