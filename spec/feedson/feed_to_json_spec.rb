@@ -16,8 +16,15 @@ describe Feedson::FeedToJson do
 
     it "returns the tags for the element with `#`" do
       version = converter.as_json["rss"]["#version"]
-      
+
       expect(version).to eq("2.0")
+    end
+
+    it "returns the text content for a tag `$t`" do
+      doc = converter.as_json
+      description = doc["rss"]["channel"]["description"]
+
+      expect(description["$t"]).to match(/to Space/)
     end
 
   end
