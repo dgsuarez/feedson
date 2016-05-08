@@ -40,6 +40,12 @@ describe Feedson::FeedToJson do
       expect(items.length).to eq(4)
     end
 
+    it "parses each item" do
+      items = doc["rss"]["channel"]["item"]
+
+      expect(items.last["title"]["$t"]).to match(/Astronauts/)
+    end
+
     it "doesn't add whitespace only text elements" do
       text_node = doc["rss"]["$t"]
 
