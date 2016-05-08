@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Feedson::FeedToJson do
 
-  context "with an RSS feed" do
+  context "with very simple RSS feed" do
 
     let(:feed) { File.read("spec/examples/rss2sample.xml") }
 

@@ -14,18 +14,8 @@ module Feedson
     end
 
     def start_element(name, attributes=[])
-      @current_element = {}
-      if @doc_config[:list_elements].include?(name)
-        parent_element[name] ||= []
-        parent_element[name].push(@current_element)
-      else
-        parent_element[name] = @current_element
-      end
-
-      attributes.each do |attr_name, attr_value|
-        @current_element["##{attr_name}"] = attr_value
-      end
-      @element_history.push(@current_element)
+      initialize_current_element(name)
+      add_attributes(attributes)
     end
 
     def characters(chars)
@@ -34,13 +24,35 @@ module Feedson
     end
 
     def end_element(name)
-      @last_pop = @element_history.pop
+      @element_history.pop
     end
 
     private
 
+    def initialize_current_element(name)
+      @current_element = {}
+      if list_element?(name)
+        parent_element[name] ||= []
+        parent_element[name].push(@current_element)
+      else
+        parent_element[name] = @current_element
+      end
+      @element_history.push(@current_element)
+
+    end
+
+    def add_attributes(attributes)
+      attributes.each do |attr_name, attr_value|
+        @current_element["##{attr_name}"] = attr_value
+      end
+    end
+
     def parent_element
       @element_history.last
+    end
+
+    def list_element?(name)
+      @doc_config[:list_elements].include?(name)
     end
 
   end
