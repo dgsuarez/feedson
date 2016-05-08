@@ -1,6 +1,6 @@
 
 module Feedson
-  class FeedDocument < Nokogiri::XML::SAX::Document
+  class FeedSaxDocument < Nokogiri::XML::SAX::Document
 
     attr_reader :root
 
