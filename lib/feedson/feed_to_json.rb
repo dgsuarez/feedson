@@ -17,7 +17,7 @@ module Feedson
     private
 
     def initialize_doc_config(doc_config)
-      {list_elements: []}.merge(doc_config)
+      {list_elements: [], mixed_content: []}.merge(doc_config)
     end
 
   end

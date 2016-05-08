@@ -11,11 +11,22 @@ module Feedson
     def start_document
       @root = {}
       @element_history = [@root]
+      @collapsables = []
     end
 
     def start_element(name, attributes=[])
-      initialize_current_element(name)
-      add_attributes(attributes)
+      unless in_collapsable?
+        @current_element = {}
+        if list_element?(name)
+          parent_element[name] ||= []
+          parent_element[name].push(@current_element)
+        else
+          parent_element[name] = @current_element
+        end
+        @element_history.push(@current_element)
+        add_attributes(attributes)
+      end
+      @collapsables.push(collapsable_element?(name))
     end
 
     def characters(chars)
@@ -26,21 +37,11 @@ module Feedson
     end
 
     def end_element(name)
-      @element_history.pop
+      @element_history.pop unless in_collapsable?
+      @collapsables.pop
     end
 
     private
-
-    def initialize_current_element(name)
-      @current_element = {}
-      if list_element?(name)
-        parent_element[name] ||= []
-        parent_element[name].push(@current_element)
-      else
-        parent_element[name] = @current_element
-      end
-      @element_history.push(@current_element)
-    end
 
     def add_attributes(attributes)
       attributes.each do |attr_name, attr_value|
@@ -54,6 +55,14 @@ module Feedson
 
     def list_element?(name)
       @doc_config[:list_elements].include?(name)
+    end
+
+    def in_collapsable?
+      @collapsables.any?
+    end
+
+    def collapsable_element?(name)
+      @doc_config[:mixed_content].include?(name)
     end
 
   end
