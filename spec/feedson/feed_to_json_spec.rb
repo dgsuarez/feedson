@@ -90,10 +90,23 @@ describe Feedson::FeedToJson do
 
     let(:doc) { converter.as_json }
 
-    it "collapses mixed content elements into a text one" do
+    it "collapses mixed content elements into a single text one" do
+      entry_content = doc["feed"]["entry"].first["content"]
+
+      expect(entry_content.keys).to eq(["#type", "$t"])
+    end
+
+    it "returns text with tags for the mixed content elements" do
       entry_content = doc["feed"]["entry"].first["content"]["$t"]
 
-      expect(entry_content).to match(/XML namespace conformance tests/)
+      expect(entry_content).to match(/an <h:abb/)
+    end
+
+    it "keeps the attributes for the children tags" do
+      entry_content = doc["feed"]["entry"].first["content"]["$t"]
+
+      expect(entry_content).to match(/<h:abbr title="/)
+
     end
 
   end

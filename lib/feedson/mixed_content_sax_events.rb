@@ -7,12 +7,13 @@ module Feedson
       reset
     end
 
-    def start_element(*)
-
+    def start_element(name, attrs)
+      attrs_as_text = attrs.map { |key, value| %Q(#{key}="#{value}") }.join(" ")
+      @text += "<#{name} #{attrs_as_text}>"
     end
 
-    def end_element(*)
-
+    def end_element(name)
+      @text += "</#{name}>"
     end
 
     def characters(chars)
