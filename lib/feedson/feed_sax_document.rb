@@ -2,67 +2,56 @@
 module Feedson
   class FeedSaxDocument < Nokogiri::XML::SAX::Document
 
-    attr_reader :root
-
     def initialize(doc_config)
       @doc_config = doc_config
     end
 
     def start_document
-      @root = {}
-      @element_history = [@root]
-      @collapsables = []
+      @regular_events = Feedson::RegularSaxEvents.new(doc_config)
+      @mixed_content_events = Feedson::MixedContentSaxEvents.new(doc_config)
+      @mixed_elements = []
     end
 
     def start_element(name, attributes=[])
-      unless in_collapsable?
-        @current_element = {}
-        if list_element?(name)
-          parent_element[name] ||= []
-          parent_element[name].push(@current_element)
-        else
-          parent_element[name] = @current_element
-        end
-        @element_history.push(@current_element)
-        add_attributes(attributes)
-      end
-      @collapsables.push(collapsable_element?(name))
+      current_events.start_element(name, attributes)
+      mixed_elements.push(name) if mixed_element?(name)
     end
 
     def characters(chars)
-      if chars =~ /[^\s]/
-        @current_element["$t"] ||= ""
-        @current_element["$t"] += chars
-      end
+      current_events.characters(chars)
     end
 
     def end_element(name)
-      @element_history.pop unless in_collapsable?
-      @collapsables.pop
+      current_events.end_element(name)
+      if on_last_mixed?(name)
+        regular_events.characters(mixed_content_events.text)
+        mixed_content_events.reset
+      end
+      mixed_elements.pop if mixed_element?(name)
+    end
+
+    def root
+      current_events.root
     end
 
     private
 
-    def add_attributes(attributes)
-      attributes.each do |attr_name, attr_value|
-        @current_element["##{attr_name}"] = attr_value
+    attr_reader :regular_events, :mixed_content_events, :mixed_elements, :doc_config
+
+    def current_events
+      if mixed_elements.empty?
+        regular_events
+      else
+        mixed_content_events
       end
     end
 
-    def parent_element
-      @element_history.last
+    def on_last_mixed?(name)
+      mixed_element?(name) && mixed_elements.size == 1
     end
 
-    def list_element?(name)
-      @doc_config[:list_elements].include?(name)
-    end
-
-    def in_collapsable?
-      @collapsables.any?
-    end
-
-    def collapsable_element?(name)
-      @doc_config[:mixed_content].include?(name)
+    def mixed_element?(name)
+      doc_config[:mixed_content].include?(name)
     end
 
   end
