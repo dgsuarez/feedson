@@ -5,8 +5,7 @@ module Feedson
 
     def initialize(doc_config)
       @doc_config = doc_config
-      @root = {}
-      @element_history = [@root]
+      reset
     end
 
     def start_element(name, attributes)
@@ -29,6 +28,11 @@ module Feedson
 
     def end_element(name)
       element_history.pop
+    end
+
+    def reset
+      @root = {}
+      @element_history = [@root]
     end
 
     private

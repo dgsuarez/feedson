@@ -4,11 +4,13 @@ module Feedson
 
     def initialize(doc_config)
       @doc_config = doc_config
+      @regular_events = Feedson::RegularSaxEvents.new(doc_config)
+      @mixed_content_events = Feedson::MixedContentSaxEvents.new(doc_config)
     end
 
     def start_document
-      @regular_events = Feedson::RegularSaxEvents.new(doc_config)
-      @mixed_content_events = Feedson::MixedContentSaxEvents.new(doc_config)
+      regular_events.reset
+      mixed_content_events.reset
       @mixed_elements = []
     end
 
@@ -23,10 +25,12 @@ module Feedson
 
     def end_element(name)
       current_events.end_element(name)
-      if on_last_mixed?(name)
+
+      if on_closing_mixed?(name)
         regular_events.characters(mixed_content_events.text)
         mixed_content_events.reset
       end
+
       mixed_elements.pop if mixed_element?(name)
     end
 
@@ -46,7 +50,7 @@ module Feedson
       end
     end
 
-    def on_last_mixed?(name)
+    def on_closing_mixed?(name)
       mixed_element?(name) && mixed_elements.size == 1
     end
 
