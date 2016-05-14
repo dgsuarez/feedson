@@ -8,13 +8,11 @@ describe Feedson::FeedToJson do
     Feedson::FeedToJson.new(feed, doc_config: doc_config)
   end
 
-  let(:rss_doc_config) do
-    Feedson::RssConfig.new
-  end
+  let(:rss_doc_config) { Feedson::RssConfig.new }
 
-  let(:atom_doc_config) do
-    Feedson::AtomConfig.new
-  end
+  let(:atom_doc_config) { Feedson::AtomConfig.new }
+
+  let(:itunes_rss_doc_config) { Feedson::ItunesRssConfig.new }
 
   context "with very simple RSS feed" do
 
@@ -65,7 +63,7 @@ describe Feedson::FeedToJson do
   context "with an itunes podcast feed" do
 
     subject(:converter) do
-      initialize_converter("itunes.xml", rss_doc_config)
+      initialize_converter("itunes.xml", itunes_rss_doc_config)
     end
 
     let(:doc) { converter.as_json }
@@ -74,6 +72,18 @@ describe Feedson::FeedToJson do
       itunes_subtitle = doc["rss"]["channel"]["itunes:subtitle"]["$t"]
 
       expect(itunes_subtitle).to match(/A show/)
+    end
+
+    it "has multiple categories" do
+      itunes_categories = doc["rss"]["channel"]["itunes:category"]
+
+      expect(itunes_categories.length).to eq(3)
+    end
+
+    it "has a list of items" do
+      items = doc["rss"]["channel"]["item"]
+
+      expect(items.length).to eq(3)
     end
   end
 

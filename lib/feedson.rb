@@ -7,6 +7,8 @@ require 'feedson/feed_to_json'
 require 'feedson/feed_sax_document'
 require 'feedson/regular_sax_events'
 require 'feedson/mixed_content_sax_events'
+
+require 'feedson/itunes_rss_config.rb'
 require 'feedson/atom_config.rb'
 require 'feedson/rss_config.rb'
 
