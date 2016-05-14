@@ -28,14 +28,14 @@ module Feedson
     end
 
     def end_element(name)
-      current_events.end_element(name)
-
       if on_closing_mixed?(name)
         regular_events.characters(mixed_content_events.text)
         mixed_content_events.reset
       end
 
       mixed_elements.pop if doc_config.mixed_element?(name)
+
+      current_events.end_element(name)
     end
 
     def root

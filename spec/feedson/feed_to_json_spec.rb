@@ -43,7 +43,6 @@ describe Feedson::FeedToJson do
     end
 
     it "has a list of items" do
-      p doc["rss"]["channel"]["description"].keys
       items = doc["rss"]["channel"]["item"]
 
       expect(items.length).to eq(4)
