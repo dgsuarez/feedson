@@ -10,7 +10,7 @@ module Feedson
 
     def start_element(name, attributes)
       @current_element = {}
-      if list_element?(name)
+      if doc_config.list_element?(name)
         parent_element[name] ||= []
         parent_element[name].push(current_element)
       else
@@ -47,10 +47,6 @@ module Feedson
 
     def parent_element
       element_history.last
-    end
-
-    def list_element?(name)
-      doc_config[:list_elements].include?(name)
     end
 
   end

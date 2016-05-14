@@ -3,12 +3,10 @@ require 'spec_helper'
 describe Feedson::JsonToFeed do
 
   def initialize_converter(feed_path)
-    doc_config = {
-      list_elements: %w(item)
-    }
+    doc_config = Feedson::RssConfig.new
     feed = File.read(feed_path)
     feed_as_json = Feedson::FeedToJson.new(feed, doc_config: doc_config).as_json
-    Feedson::JsonToFeed.new(feed_as_json, doc_config: doc_config) 
+    Feedson::JsonToFeed.new(feed_as_json)
   end
 
   context "with very simple RSS feed" do

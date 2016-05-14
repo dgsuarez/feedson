@@ -16,7 +16,7 @@ module Feedson
 
     def start_element(name, attributes=[])
       current_events.start_element(name, attributes)
-      mixed_elements.push(name) if mixed_element?(name)
+      mixed_elements.push(name) if doc_config.mixed_element?(name)
     end
 
     def cdata_block(cdata_content)
@@ -35,7 +35,7 @@ module Feedson
         mixed_content_events.reset
       end
 
-      mixed_elements.pop if mixed_element?(name)
+      mixed_elements.pop if doc_config.mixed_element?(name)
     end
 
     def root
@@ -55,11 +55,7 @@ module Feedson
     end
 
     def on_closing_mixed?(name)
-      mixed_element?(name) && mixed_elements.size == 1
-    end
-
-    def mixed_element?(name)
-      doc_config[:mixed_content].include?(name)
+      doc_config.mixed_element?(name) && mixed_elements.size == 1
     end
 
   end

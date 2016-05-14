@@ -2,7 +2,7 @@
 module Feedson
   class JsonToFeed
 
-    def initialize(feed_as_json, doc_config: {})
+    def initialize(feed_as_json)
       @feed_as_json = feed_as_json
     end
 
@@ -15,7 +15,7 @@ module Feedson
     def builder
       Nokogiri::XML::Builder.new do |xml|
         root_name, root_content = @feed_as_json.first
-        add_node(xml, root_name, root_content) 
+        add_node(xml, root_name, root_content)
       end
     end
 
@@ -31,7 +31,7 @@ module Feedson
       method_name = "#{tag_name}_".to_sym
       attributes = get_attributes(tag_content)
 
-      xml.send(method_name, attributes) do 
+      xml.send(method_name, attributes) do
         add_tag_content(xml, tag_content)
       end
     end

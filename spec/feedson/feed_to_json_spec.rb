@@ -9,16 +9,11 @@ describe Feedson::FeedToJson do
   end
 
   let(:rss_doc_config) do
-    {
-      list_elements: %w(item)
-    }
+    Feedson::RssConfig.new
   end
 
   let(:atom_doc_config) do
-    {
-      list_elements: %w(entry),
-      mixed_content: %w(content)
-    }
+    Feedson::AtomConfig.new
   end
 
   context "with very simple RSS feed" do
@@ -48,6 +43,7 @@ describe Feedson::FeedToJson do
     end
 
     it "has a list of items" do
+      p doc["rss"]["channel"]["description"].keys
       items = doc["rss"]["channel"]["item"]
 
       expect(items.length).to eq(4)
