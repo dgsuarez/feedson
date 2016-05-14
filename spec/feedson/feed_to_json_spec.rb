@@ -111,4 +111,19 @@ describe Feedson::FeedToJson do
 
   end
 
+  context "with CDATA fields" do
+    subject(:converter) do
+      initialize_converter("tender_love.xml", rss_doc_config)
+    end
+
+    let(:doc) { converter.as_json }
+
+    it "gets inserts content CDATA content as a text node" do
+      item_description = doc["rss"]["channel"]["item"].first["description"]["$t"]
+
+      expect(item_description).to match(/^<!\[CDATA\[Oops.*?\]\]>$/m)
+    end
+
+  end
+
 end

@@ -19,6 +19,10 @@ module Feedson
       mixed_elements.push(name) if mixed_element?(name)
     end
 
+    def cdata_block(cdata_content)
+      current_events.characters("<![CDATA[#{cdata_content}]]>")
+    end
+
     def characters(chars)
       current_events.characters(chars)
     end
