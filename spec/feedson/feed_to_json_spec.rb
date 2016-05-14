@@ -113,7 +113,7 @@ describe Feedson::FeedToJson do
 
     let(:doc) { converter.as_json }
 
-    it "gets inserts content CDATA content as a text node" do
+    it "inserts CDATA content as a text node" do
       item_description = doc["rss"]["channel"]["item"].first["description"]["$t"]
 
       expect(item_description).to match(/^<!\[CDATA\[Oops.*?\]\]>$/m)
