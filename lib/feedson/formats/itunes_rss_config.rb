@@ -3,7 +3,7 @@ module Feedson
     class ItunesRssConfig
 
       def initialize
-        @rss_config = RssConfig.new
+        @rss_config = Formats::RssConfig.new
       end
 
       def list_element?(element_name)

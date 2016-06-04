@@ -4,8 +4,8 @@ module Feedson
 
     def initialize(doc_config)
       @doc_config = doc_config
-      @regular_events = Feedson::RegularSaxEvents.new(doc_config)
-      @mixed_content_events = Feedson::MixedContentSaxEvents.new(doc_config)
+      @regular_events = Feedson::SaxEvents::Regular.new(doc_config)
+      @mixed_content_events = Feedson::SaxEvents::MixedContent.new(doc_config)
     end
 
     def start_document
