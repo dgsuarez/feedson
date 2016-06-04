@@ -8,11 +8,11 @@ describe Feedson::FeedToJson do
     Feedson::FeedToJson.new(feed, doc_config: doc_config)
   end
 
-  let(:rss_doc_config) { Feedson::RssConfig.new }
+  let(:rss_doc_config) { Feedson::Formats::RssConfig.new }
 
-  let(:atom_doc_config) { Feedson::AtomConfig.new }
+  let(:atom_doc_config) { Feedson::Formats::AtomConfig.new }
 
-  let(:itunes_rss_doc_config) { Feedson::ItunesRssConfig.new }
+  let(:itunes_rss_doc_config) { Feedson::Formats::ItunesRssConfig.new }
 
   context "with very simple RSS feed" do
 
