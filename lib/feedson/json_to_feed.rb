@@ -38,12 +38,21 @@ module Feedson
 
     def add_tag_content(xml, tag_content)
       tag_content.each do |key, contents|
-        if text?(key)
+        if cdata?(key, contents)
+          inner_contents = extract_cdata(contents)
+          xml.cdata(inner_contents)
+        elsif text?(key)
           xml.text(contents)
         elsif !attribute?(key)
           add_node(xml, key, contents)
         end
       end
+    end
+
+    def extract_cdata(contents)
+      cdata_extrator = /<!\[CDATA\[(.*)\]\]/m
+      match_data = contents.match(cdata_extrator)
+      match_data && match_data[1]
     end
 
     def get_attributes(tag_content)
@@ -57,8 +66,13 @@ module Feedson
       key =~ /^#/
     end
 
+    def cdata?(key, contents)
+      text?(key) && contents =~ /\b*<!\[CDATA/
+    end
+
     def text?(key)
       key == "$t"
     end
+
   end
 end

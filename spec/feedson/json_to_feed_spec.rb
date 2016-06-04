@@ -36,5 +36,21 @@ describe Feedson::JsonToFeed do
     end
 
   end
+
+  context "with CDATA fields" do
+    subject(:converter) { initialize_converter("spec/examples/tender_love.xml") }
+
+    let(:xml) { converter.to_xml }
+
+    it "doesn't escape the CDATAs" do
+      expect(xml).to match(/<!\[CDATA/)
+    end
+
+    it "adds the full content for multiline cdatas" do
+      expect(xml).to match(/<p>Conditional functionality added to methods with no weird "alias method chain/)
+    end
+
+
+  end
 end
 
