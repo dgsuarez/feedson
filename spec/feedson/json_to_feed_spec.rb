@@ -2,16 +2,17 @@ require 'spec_helper'
 
 describe Feedson::JsonToFeed do
 
-  def initialize_converter(feed_path)
-    doc_config = Feedson::Formats::RssConfig.new
+  def initialize_converter(file_name)
+    feed_path = File.join("spec/examples", file_name)
     feed = File.read(feed_path)
-    feed_as_json = Feedson::FeedToJson.new(feed, doc_config: doc_config).as_json
+    feed_as_json = Feedson.parse(feed_contents: feed, format: :rss)
+
     Feedson::JsonToFeed.new(feed_as_json)
   end
 
   context "with very simple RSS feed" do
 
-    subject(:converter) { initialize_converter("spec/examples/rss2sample.xml") }
+    subject(:converter) { initialize_converter("rss2sample.xml") }
 
     let(:xml) { converter.to_xml }
 
@@ -27,7 +28,7 @@ describe Feedson::JsonToFeed do
 
   context "with itunes feed" do
 
-    subject(:converter) { initialize_converter("spec/examples/itunes.xml") }
+    subject(:converter) { initialize_converter("itunes.xml") }
 
     let(:xml) { converter.to_xml }
 
@@ -38,7 +39,7 @@ describe Feedson::JsonToFeed do
   end
 
   context "with CDATA fields" do
-    subject(:converter) { initialize_converter("spec/examples/tender_love.xml") }
+    subject(:converter) { initialize_converter("tender_love.xml") }
 
     let(:xml) { converter.to_xml }
 
