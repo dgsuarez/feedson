@@ -30,7 +30,7 @@ module Feedson
     case format
     when :itunes then Formats::ItunesRssConfig.new
     when :atom then Formats::AtomConfig.new
-    else RssConfig.new
+    else Formats::RssConfig.new
     end
   end
 
